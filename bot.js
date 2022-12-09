@@ -101,7 +101,7 @@ const fetchKuCoinPrice = async () => {
         let response = await fetch(url);
         let result = await response.json();
         //cexPrice = result.tickers[0].last;
-       cexPrice = parseFloat(0.005408148139378678); // Testing
+       cexPrice = parseFloat(0.007208148139378678); // Testing
         
         console.log("Token price on KuCoin: "+ result.tickers[0].last);
         console.log("\n");
