@@ -54,7 +54,7 @@ console.log("\n");
 
 const fetchKuCoinPrice = async () => {
     try {
-        console.log("\x1b[33m%s\x1b[0m","Fetching REV3L's price on KuCoin... /n")
+        console.log("\x1b[33m%s\x1b[0m","Fetching token price on KuCoin... /n")
     
         let url = new URL(`https://api.coingecko.com/api/v3/coins/binance-smart-chain/contract/0x30b5e345c79255101b8af22a19805a6fb96ddebb`);
         let response = await fetch(url);
@@ -62,7 +62,7 @@ const fetchKuCoinPrice = async () => {
         // dexPrice = result.tickers[0].last;
         dexPrice = parseFloat(0.006408148139378678); // Testing
         
-        console.log("REV3L's price on KuCoin: "+ result.tickers[0].last);
+        console.log("Token price on KuCoin: "+ result.tickers[0].last);
         console.log("\n");   
     } catch (error) {
         console.log("Error KuCoin Price: " + error);
@@ -118,14 +118,14 @@ const fetchKuCoinPrice = async () => {
             let x = dif * 100 / dexPrice;
             console.log("Dif: +" + parseFloat(x).toFixed(2) + "% bigger on DEX");
 
-            if(x > 50) {console.log("\n Buy with 1,000 BUSD! \n ")}
-            else if(x<= 50 && x > 35) {console.log("\n Buy with 750 BUSD! \n ")}
-            else if(x<= 35 && x > 20) {console.log("\n Buy with 500 BUSD! \n ")}
-            else if(x<= 20 && x > 10) {console.log("\n Buy with 250 BUSD! \n ")}
-            else if(x<= 10 && x > 5) {console.log("\n Buy with 150 BUSD! \n ")}
-            else if(x<= 5 && x > 2.5) {console.log("\n Buy with 50 BUSD! \n ")}
-            else if(x<= 2.5 && x > 1) {console.log("\n Buy with 25 BUSD! \n ")}
-            else if(x<= 1) {console.log("\n Done! \n ")}
+            if(x > 50) {console.log("\x1b[31m", "\n ERR! \n ")}
+            else if(x<= 50 && x > 35) {console.log("\x1b[32m", "\n Buy with 750 BUSD! \n ")}
+            else if(x<= 35 && x > 20) {console.log("\x1b[32m", "\n Buy with 500 BUSD! \n ")}
+            else if(x<= 20 && x > 10) {console.log("\x1b[32m", "\n Buy with 250 BUSD! \n ")}
+            else if(x<= 10 && x > 5) {console.log("\x1b[32m", "\n Buy with 150 BUSD! \n ")}
+            else if(x<= 5 && x > 2.5) {console.log("\x1b[32m", "\n Buy with 50 BUSD! \n ")}
+            else if(x<= 2.5 && x > 1) {console.log("\x1b[32m", "\n Buy with 25 BUSD! \n ")}
+            else if(x<= 1) {console.log("\x1b[32m","\n Done! \n ")}
         } catch (error) {
             console.log("Err:" + error);
         }
@@ -138,14 +138,14 @@ const fetchKuCoinPrice = async () => {
             let x = dif * 100 / pcsPrice;
             console.log("Dif: -" + parseFloat(x).toFixed(2) + "% lower on DEX");
 
-            if(x > 50) {console.log("\n Sell for 1,000 BUSD! \n ")}
-            else if(x<= 50 && x > 35) {console.log("\n Sell for 750 BUSD! \n ")}
-            else if(x<= 35 && x > 20) {console.log("\n Sell for 500 BUSD! \n ")}
-            else if(x<= 20 && x > 10) {console.log("\n Sell for 250 BUSD! \n ")}
-            else if(x<= 10 && x > 5) {console.log("\n Sell for 150 BUSD! \n ")}
-            else if(x<= 5 && x > 2.5) {console.log("\n Sell for 50 BUSD! \n ")}
-            else if(x<= 2.5 && x > 1) {console.log("\n Sell for 25 BUSD! \n ")}
-            else if(x<= 1) {console.log("Done!")}
+            if(x > 50) {console.log("\x1b[31m", "\n ERR! \n ")}
+            else if(x<= 50 && x > 35) {console.log("\x1b[31m", "\n Sell for 750 BUSD! \n ")}
+            else if(x<= 35 && x > 20) {console.log("\x1b[31m", "\n Sell for 500 BUSD! \n ")}
+            else if(x<= 20 && x > 10) {console.log("\x1b[31m", "\n Sell for 250 BUSD! \n ")}
+            else if(x<= 10 && x > 5) {console.log("\x1b[31m", "\n Sell for 150 BUSD! \n ")}
+            else if(x<= 5 && x > 2.5) {console.log("\x1b[31m", "\n Sell for 50 BUSD! \n ")}
+            else if(x<= 2.5 && x > 1) {console.log("\x1b[31m", "\n Sell for 25 BUSD! \n ")}
+            else if(x<= 1) {console.log("\x1b[32m","\n Done! \n ")}
         } catch (error) {
             console.log("Err:" + error);
         }
