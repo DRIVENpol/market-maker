@@ -25,7 +25,7 @@ const abiPair = ["function getReserves() external view returns (uint112 reserve0
 const tokenAbi = ["event Transfer(address indexed from, address indexed to, uint256 value)"];
 
 // Prices
-let dexPrice = 0;
+letcexPrice = 0;
 let pcsPrice = 0;
 let pairAddress = "";
 
@@ -100,8 +100,8 @@ const fetchKuCoinPrice = async () => {
         let url = new URL(`https://api.coingecko.com/api/v3/coins/binance-smart-chain/contract/0x30b5e345c79255101b8af22a19805a6fb96ddebb`);
         let response = await fetch(url);
         let result = await response.json();
-        // dexPrice = result.tickers[0].last;
-        dexPrice = parseFloat(0.005408148139378678); // Testing
+        //cexPrice = result.tickers[0].last;
+       cexPrice = parseFloat(0.005408148139378678); // Testing
         
         console.log("Token price on KuCoin: "+ result.tickers[0].last);
         console.log("\n");
@@ -117,9 +117,9 @@ const fetchKuCoinPrice = async () => {
 
     const buy = async () => {
         try {
-            let dif = dexPrice - pcsPrice;
+            let dif =cexPrice - pcsPrice;
 
-            let x = dif * 100 / dexPrice;
+            let x = dif * 100 /cexPrice;
             console.log("Dif: +" + parseFloat(x).toFixed(2) + "% bigger on DEX");
 
             if(x > 50) {console.log("\x1b[31m", "\n ERR! \n ")}
@@ -137,7 +137,7 @@ const fetchKuCoinPrice = async () => {
 
     const sell = async () => {
         try {
-            let dif = pcsPrice - dexPrice;
+            let dif = pcsPrice -cexPrice;
 
             let x = dif * 100 / pcsPrice;
             console.log("Dif: -" + parseFloat(x).toFixed(2) + "% lower on DEX");
@@ -162,13 +162,13 @@ const fetchKuCoinPrice = async () => {
         console.log("\x1b[33m%s\x1b[0m","Comparing prices...");
         
         
-        if(dexPrice > pcsPrice) {
-            console.log("Cex Price: " + "[" + pcsPrice + "]" + "is lower than Dex Price " + "[" + dexPrice + "]" )
+        if(cexPrice > pcsPrice) {
+            console.log("Cex Price: " + "[" + cexPrice + "]" + "is bigger than Dex Price " + "[" + pcsPrice + "]" )
             console.log("Buying on PCS...");
             console.log("\n");
             buy();
-        } else if(dexPrice < pcsPrice) {
-            console.log("Cex Price: " + "[" + pcsPrice + "]" + "is bigger than Dex Price " + "[" + dexPrice + "]" )
+        } else if(cexPrice < pcsPrice) {
+            console.log("Cex Price: " + "[" + cexPrice + "]" + "is lower than Dex Price " + "[" +pcsPrice + "]" )
             console.log("Selling on PCS...");
             console.log("\n");
             sell();        }
