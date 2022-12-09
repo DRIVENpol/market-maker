@@ -52,25 +52,7 @@ let factory = new ethers.Contract(pcsFactory, factoryAbi, callerWallet);
 console.log("Connected to PCS factory!");
 console.log("\n");
 
-const fetchKuCoinPrice = async () => {
-    try {
-        console.log("\x1b[33m%s\x1b[0m","Fetching token price on KuCoin... /n")
-    
-        let url = new URL(`https://api.coingecko.com/api/v3/coins/binance-smart-chain/contract/0x30b5e345c79255101b8af22a19805a6fb96ddebb`);
-        let response = await fetch(url);
-        let result = await response.json();
-        // dexPrice = result.tickers[0].last;
-        dexPrice = parseFloat(0.006408148139378678); // Testing
-        
-        console.log("Token price on KuCoin: "+ result.tickers[0].last);
-        console.log("\n");   
-    } catch (error) {
-        console.log("Error KuCoin Price: " + error);
-    }  
-
-    }
-    
-    const fetchPCSPrice = async () => {
+const fetchPCSPrice = async () => {
     try {
         console.log("\x1b[33m%s\x1b[0m","Fetching pair address on PancakeSwap...");
     
@@ -110,6 +92,28 @@ const fetchKuCoinPrice = async () => {
         console.log("Error PCS price: " + error);
     }
     }
+
+const fetchKuCoinPrice = async () => {
+    try {
+        console.log("\x1b[33m%s\x1b[0m","Fetching token price on KuCoin... /n")
+    
+        let url = new URL(`https://api.coingecko.com/api/v3/coins/binance-smart-chain/contract/0x30b5e345c79255101b8af22a19805a6fb96ddebb`);
+        let response = await fetch(url);
+        let result = await response.json();
+        // dexPrice = result.tickers[0].last;
+        dexPrice = parseFloat(0.005408148139378678); // Testing
+        
+        console.log("Token price on KuCoin: "+ result.tickers[0].last);
+        console.log("\n");
+        
+        fetchPCSPrice();
+    } catch (error) {
+        console.log("Error KuCoin Price: " + error);
+    }  
+
+    }
+    
+
 
     const buy = async () => {
         try {
@@ -210,8 +214,7 @@ const fetchKuCoinPrice = async () => {
 //   });
 
 setInterval(function(){ 
-    fetchKuCoinPrice();
-    fetchPCSPrice();  
+    fetchKuCoinPrice();  
 }, 10000);
 
 
