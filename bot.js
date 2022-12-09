@@ -54,7 +54,8 @@ const fetchKuCoinPrice = async () => {
         let url = new URL(`https://api.coingecko.com/api/v3/coins/binance-smart-chain/contract/0x30b5e345c79255101b8af22a19805a6fb96ddebb`);
         let response = await fetch(url);
         let result = await response.json();
-        dexPrice = result.tickers[0].last;
+        // dexPrice = result.tickers[0].last;
+        dexPrice = parseFloat(0.006408148139378678); // Testing
         
         console.log("REV3L's price on KuCoin: "+ result.tickers[0].last);
         console.log("\n");   
@@ -110,7 +111,7 @@ const fetchKuCoinPrice = async () => {
             let dif = dexPrice - pcsPrice;
 
             let x = dif * 100 / dexPrice;
-            console.log("Dif: " + x + "%");
+            console.log("Dif: +" + parseFloat(x).toFixed(2) + "% bigger on DEX");
 
             if(x > 50) {console.log("\n Buy with 1,000 BUSD! \n ")}
             else if(x<= 50 && x > 35) {console.log("\n Buy with 750 BUSD! \n ")}
@@ -130,7 +131,7 @@ const fetchKuCoinPrice = async () => {
             let dif = pcsPrice - dexPrice;
 
             let x = dif * 100 / pcsPrice;
-            console.log("Dif: " + x + "%");
+            console.log("Dif: -" + parseFloat(x).toFixed(2) + "% lower on DEX");
 
             if(x > 50) {console.log("\n Sell for 1,000 BUSD! \n ")}
             else if(x<= 50 && x > 35) {console.log("\n Sell for 750 BUSD! \n ")}
@@ -153,7 +154,7 @@ const fetchKuCoinPrice = async () => {
         
         
         if(dexPrice > pcsPrice) {
-            console.log("Dex Price: " + "[" + dexPrice + "]" + "is bigger than Cex Price " + "[" + pcsPrice + "]" )
+            console.log("Cex Price: " + "[" + pcsPrice + "]" + "is lower than Dex Price " + "[" + dexPrice + "]" )
             console.log("Buying on PCS...");
             console.log("\n");
             buy();
@@ -161,8 +162,7 @@ const fetchKuCoinPrice = async () => {
             console.log("Cex Price: " + "[" + pcsPrice + "]" + "is bigger than Dex Price " + "[" + dexPrice + "]" )
             console.log("Selling on PCS...");
             console.log("\n");
-            sell();
-        }
+            sell();        }
     } catch (error) {
         console.log("Error compare prices: " + error);
     }
