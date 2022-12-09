@@ -1,3 +1,8 @@
+// TO DO LIST 
+// 1) BUY/SELL FOR ETH 
+// 2) BUY/SELL FOR TOKENS
+// 3) CONNECT TO KUCOIN API + READ/WRITE
+
 const ethers = require('ethers');
 require("dotenv").config()
 
