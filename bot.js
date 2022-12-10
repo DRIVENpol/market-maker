@@ -105,6 +105,7 @@ const fetchKuCoinPrice = async () => {
         
         console.log("Token price on KuCoin: "+ result.tickers[0].last);
         console.log("\n");
+
         
         fetchPCSPrice();
     } catch (error) {
@@ -112,8 +113,6 @@ const fetchKuCoinPrice = async () => {
     }  
 
     }
-    
-
 
     const buy = async () => {
         try {
