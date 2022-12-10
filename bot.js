@@ -198,7 +198,7 @@ const buy = async () => {
         try {
             let dif = cexPrice - pcsPrice;
 
-            let x = dif * 100 /cexPrice;
+            let x = dif * 100 / cexPrice;
             console.log("Dif: +" + parseFloat(x).toFixed(2) + "% bigger on DEX");
 
             if(x > 50) {console.log("\x1b[31m", "\n ERR! \n ")}
@@ -235,7 +235,7 @@ const buy = async () => {
 
 const sell = async () => {
         try {
-            let dif = pcsPrice -cexPrice;
+            let dif = pcsPrice - cexPrice;
 
             let x = dif * 100 / pcsPrice;
             console.log("Dif: -" + parseFloat(x).toFixed(2) + "% lower on DEX");
