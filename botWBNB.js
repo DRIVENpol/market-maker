@@ -51,7 +51,7 @@ console.log("\x1b[33m%s\x1b[0m", "CONNECTING TO SMART CONTRACTS...");
 let factory = new ethers.Contract(pcsFactory, factoryAbi, callerWallet);
 let router = new ethers.Contract(pcsRouter, routerAbi, callerWallet);
 let tokenSc = new ethers.Contract(token, tokenAbi, callerWallet);
-let tokenBusdSc = new ethers.Contract(busd, tokenAbi, callerWallet);
+let tokenBusdSc = new ethers.Contract(wbnbAddress, tokenAbi, callerWallet);
 
 console.log("Connected to PCS factory!");
 console.log("\n");
@@ -60,7 +60,7 @@ const fetchPCSPrice = async () => {
     try {
         console.log("\x1b[33m%s\x1b[0m","Fetching pair address on PancakeSwap...");
     
-        pairAddress = await factory.getPair(busd, token);
+        pairAddress = await factory.getPair(wbnbAddress, token);
         
         console.log("Pair Address: " + pairAddress);
         console.log("\n");
@@ -104,7 +104,7 @@ const fetchPCSPrice = async () => {
 
         finalPrice = pcsPrice * bnbPrice;
 
-        console.log("PCS price: " + pcsPrice + " BUSD");
+        console.log("PCS price: " + finalPrice + " BUSD");
 
         comparePrices();
     } catch (error) {
@@ -146,7 +146,7 @@ const buyTokensWithBnb = async (amount) => {
         const gasLimit = await router.estimateGas.swapTokensForExactTokens(
             String(Math.round(_minOut)), // Min out
             String(_amount), // Amount
-            [busd, token], // Path
+            [wbnbAddress, token], // Path
             callerWallet.address, // Receiver
             Math.floor(Date.now() / 1000) + 60 * 20,
             {from: callerWallet.address});
@@ -181,7 +181,7 @@ const sellTokensForBnb = async (amount) => {
         const gasLimit = await router.estimateGas.swapTokensForExactTokens(
             String(Math.round(_howManyTokens)), // Min out
             String(_amount), // Amount
-            [token, busd], // Path
+            [token, wbnbAddress], // Path
             callerWallet.address, // Receiver
             (Math.floor(Date.now() / 1000) + 60 * 20), 
             {from: callerWallet.address});
