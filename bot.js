@@ -132,7 +132,7 @@ const fetchKuCoinPrice = async () => {
     }
 
     const buyTokensWithBusd = async (amount) => {
-
+        try {
         let _amount = ethers.utils.parseEther(amount).toHexString();
 
         let tx = await router.swapTokensForTokens(
@@ -149,6 +149,33 @@ const fetchKuCoinPrice = async () => {
             tx.wait();
 
             console.log("Bought with " + amount + "BUSD");
+        } catch (error) {
+            console.log("Failed to buy: " + error);
+        } 
+    }
+
+    const sellTokensForBusd = async (amount) => {
+        try {
+        // How many tokens should be sold for "amount" of BUSD
+        let _howManyTokens = amount / pcsPrice;
+
+        let tx = await router.swapTokensForTokens(
+            0, // Slippage
+            [token, busd], // Path
+            callerWallet, // Receiver
+            Math.floor(Date.now() / 1000) + 60 * 10, // 10 minutes from now
+            {
+                ...gas,
+                value: _howManyTokens
+            }
+            );
+
+            tx.wait();
+
+            console.log("Bought with " + amount + "BUSD");
+        } catch (error) {
+            console.log("Failed to sell: " + error);
+        }
     }
 
     const buy = async () => {
@@ -159,12 +186,30 @@ const fetchKuCoinPrice = async () => {
             console.log("Dif: +" + parseFloat(x).toFixed(2) + "% bigger on DEX");
 
             if(x > 50) {console.log("\x1b[31m", "\n ERR! \n ")}
-            else if(x<= 50 && x > 35) {console.log("\x1b[32m", "\n Buy with 750 BUSD! \n ")}
-            else if(x<= 35 && x > 20) {console.log("\x1b[32m", "\n Buy with 500 BUSD! \n ")}
-            else if(x<= 20 && x > 10) {console.log("\x1b[32m", "\n Buy with 250 BUSD! \n ")}
-            else if(x<= 10 && x > 5) {console.log("\x1b[32m", "\n Buy with 150 BUSD! \n ")}
-            else if(x<= 5 && x > 2.5) {console.log("\x1b[32m", "\n Buy with 50 BUSD! \n ")}
-            else if(x<= 2.5 && x > 1) {console.log("\x1b[32m", "\n Buy with 25 BUSD! \n ")}
+            else if(x<= 50 && x > 35) {
+                console.log("\x1b[32m", "\n Buying with 750 BUSD! \n ");
+                buyTokensWithBusd(750);
+            }
+            else if(x<= 35 && x > 20) {
+                console.log("\x1b[32m", "\n Buying with 500 BUSD! \n ");
+                buyTokensWithBusd(500);
+            }
+            else if(x<= 20 && x > 10) {
+                console.log("\x1b[32m", "\n Buying with 250 BUSD! \n ");
+                buyTokensWithBusd(250);
+            }
+            else if(x<= 10 && x > 5) {
+                console.log("\x1b[32m", "\n Buying with 150 BUSD! \n ");
+                buyTokensWithBusd(150);
+            }
+            else if(x<= 5 && x > 2.5) {
+                console.log("\x1b[32m", "\n Buying with 50 BUSD! \n ");
+                buyTokensWithBusd(50);
+            }
+            else if(x<= 2.5 && x > 1) {
+                console.log("\x1b[32m", "\n Buying with 25 BUSD! \n ");
+                buyTokensWithBusd(25);
+            }
             else if(x<= 1) {console.log("\x1b[32m","\n Done! \n ")}
         } catch (error) {
             console.log("Err:" + error);
@@ -179,12 +224,30 @@ const fetchKuCoinPrice = async () => {
             console.log("Dif: -" + parseFloat(x).toFixed(2) + "% lower on DEX");
 
             if(x > 50) {console.log("\x1b[31m", "\n ERR! \n ")}
-            else if(x<= 50 && x > 35) {console.log("\x1b[31m", "\n Sell for 750 BUSD! \n ")}
-            else if(x<= 35 && x > 20) {console.log("\x1b[31m", "\n Sell for 500 BUSD! \n ")}
-            else if(x<= 20 && x > 10) {console.log("\x1b[31m", "\n Sell for 250 BUSD! \n ")}
-            else if(x<= 10 && x > 5) {console.log("\x1b[31m", "\n Sell for 150 BUSD! \n ")}
-            else if(x<= 5 && x > 2.5) {console.log("\x1b[31m", "\n Sell for 50 BUSD! \n ")}
-            else if(x<= 2.5 && x > 1) {console.log("\x1b[31m", "\n Sell for 25 BUSD! \n ")}
+            else if(x<= 50 && x > 35) {
+                console.log("\x1b[31m", "\n Sell for 750 BUSD! \n ");
+                sellTokensForBusd(750);
+            }
+            else if(x<= 35 && x > 20) {
+                console.log("\x1b[31m", "\n Sell for 500 BUSD! \n ");
+                sellTokensForBusd(500);
+            }
+            else if(x<= 20 && x > 10) {
+                console.log("\x1b[31m", "\n Sell for 250 BUSD! \n ");
+                sellTokensForBusd(250);  
+            }
+            else if(x<= 10 && x > 5) {
+                console.log("\x1b[31m", "\n Sell for 150 BUSD! \n ");
+                sellTokensForBusd(150);       
+            }
+            else if(x<= 5 && x > 2.5) {
+                console.log("\x1b[31m", "\n Sell for 50 BUSD! \n ");
+                sellTokensForBusd(50);
+            }
+            else if(x<= 2.5 && x > 1) {
+                console.log("\x1b[31m", "\n Sell for 25 BUSD! \n ");
+                sellTokensForBusd(25);
+            }
             else if(x<= 1) {console.log("\x1b[32m","\n Done! \n ")}
         } catch (error) {
             console.log("Err:" + error);
