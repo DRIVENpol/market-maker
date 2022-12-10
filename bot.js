@@ -142,12 +142,12 @@ const fetchKuCoinPrice = async () => {
             console.log("GAS: " + String(gasLimit));
 
         // let tx = await router.swapExactTokensForTokens(
-        //     _amount, // Amount,
-        //     _minOut, // Min out
+        //     String(Math.round(_minOut)), // Min out
+        //     String(_amount), // Amount
         //     [busd, token], // Path
-        //     callerWallet, // Receiver
-        //     Math.floor(Date.now() / 1000) + 60 * 20
-        //     );
+        //     callerWallet.address, // Receiver
+        //     Math.floor(Date.now() / 1000) + 60 * 20,
+        //     {from: callerWallet.address, gasLimit: gasLimit.toString()});
 
         //     tx.wait();
 
@@ -176,12 +176,12 @@ const fetchKuCoinPrice = async () => {
             console.log("GAS: " + String(gasLimit));
 
         // let tx = await router.swapExactTokensForTokens(
-        //     _howManyTokens, // How many to sell
-        //     ethers.utils.parseEther(amount).toHexString(), // Min out
+        //     String(Math.round(_howManyTokens)), // Min out
+        //     String(_amount), // Amount
         //     [token, busd], // Path
-        //     callerWallet, // Receiver
-        //     (Math.floor(Date.now() / 1000) + 60 * 20)
-        //     );
+        //     callerWallet.address, // Receiver
+        //     (Math.floor(Date.now() / 1000) + 60 * 20), 
+        //     {from: callerWallet.address, gasLimit: gasLimit.toString()});
 
         //     tx.wait();
 
