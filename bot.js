@@ -4,6 +4,7 @@
 // 3) CONNECT TO KUCOIN API + READ/WRITE
 
 const ethers = require('ethers');
+const routerAbi = require('./pcs.json');
 require("dotenv").config()
 
 // ENV variables
@@ -22,21 +23,12 @@ const pcsRouter = "0x10ED43C718714eb63d5aA57B78B54704E256024E";
 // PancakeSwap Factory ABI - only for "getPair" function
 const factoryAbi = ["function getPair(address tokenA, address tokenB) external view returns (address pair)"];
 const abiPair = ["function getReserves() external view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast)", "function token0() external view returns (address)"];
-const tokenAbi = ["function decimals() public view returns (uint8)", "function balanceOf(address account) public view returns (uint256)"];
-const routerABI = ["function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external ensure(deadline) returns (uint[] memory amounts)",
-"function swapTokensForExactTokens(uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline) external ensure(deadline) returns (uint[] memory amounts)"]
-
+const tokenAbi = ["function decimals() public view returns (uint8)", "function balanceOf(address account) public view returns (uint256)",
+"function approve(address spender, uint256 amount) public returns (bool)"];
 // Prices
 letcexPrice = 0;
 let pcsPrice = 0;
 let pairAddress = "";
-
-// Gas
-const gasPrice = ethers.utils.parseUnits('10', 'gwei');
-const gas = {
-  gasPrice: gasPrice,
-  gasLimit: 300000
-}
 
 // MAIN
 const main = async () => {
@@ -57,7 +49,7 @@ console.log("\n");
 console.log("\x1b[33m%s\x1b[0m", "CONNECTING TO SMART CONTRACTS...");
 
 let factory = new ethers.Contract(pcsFactory, factoryAbi, callerWallet);
-let router = new ethers.Contract(pcsRouter, routerABI, callerWallet);
+let router = new ethers.Contract(pcsRouter, routerAbi, callerWallet);
 let tokenSc = new ethers.Contract(token, tokenAbi, callerWallet);
 let tokenBusdSc = new ethers.Contract(busd, tokenAbi, callerWallet);
 
@@ -118,7 +110,7 @@ const fetchKuCoinPrice = async () => {
         let response = await fetch(url);
         let result = await response.json();
         cexPrice = result.tickers[0].last;
-    //    cexPrice = parseFloat(0.007208148139378678); // Testing
+    //    cexPrice = parseFloat(0.003208148139378678); // Testing
         
         console.log("Token price on KuCoin: "+ result.tickers[0].last);
         console.log("\n");
@@ -133,22 +125,33 @@ const fetchKuCoinPrice = async () => {
 
     const buyTokensWithBusd = async (amount) => {
         try {
-        let _amount = ethers.utils.parseEther(amount).toHexString();
 
-        let tx = await router.swapTokensForTokens(
-            0, // Slippage
+        let _amount = ethers.utils.parseEther(String(amount));
+        let _minOut = amount / pcsPrice;
+
+        await tokenBusdSc.approve(pcsRouter, _amount);
+
+        const gasLimit = await router.estimateGas.swapTokensForExactTokens(
+            String(Math.round(_minOut)), // Min out
+            String(_amount), // Amount
             [busd, token], // Path
-            callerWallet, // Receiver
-            Math.floor(Date.now() / 1000) + 60 * 10, // 10 minutes from now
-            {
-                ...gas,
-                value: _amount
-            }
-            );
+            callerWallet.address, // Receiver
+            Math.floor(Date.now() / 1000) + 60 * 20,
+            {from: callerWallet.address});
 
-            tx.wait();
+            console.log("GAS: " + String(gasLimit));
 
-            console.log("Bought with " + amount + "BUSD");
+        // let tx = await router.swapExactTokensForTokens(
+        //     _amount, // Amount,
+        //     _minOut, // Min out
+        //     [busd, token], // Path
+        //     callerWallet, // Receiver
+        //     Math.floor(Date.now() / 1000) + 60 * 20
+        //     );
+
+        //     tx.wait();
+
+            console.log("Bought with " + amount + " BUSD");
         } catch (error) {
             console.log("Failed to buy: " + error);
         } 
@@ -157,22 +160,32 @@ const fetchKuCoinPrice = async () => {
     const sellTokensForBusd = async (amount) => {
         try {
         // How many tokens should be sold for "amount" of BUSD
-        let _howManyTokens = amount / pcsPrice;
+        let _howManyTokens = ethers.BigNumber.from(Math.round(amount / pcsPrice));
+        let _amount = ethers.utils.parseEther(String(amount));
 
-        let tx = await router.swapTokensForTokens(
-            0, // Slippage
+        await tokenSc.approve(pcsRouter, _amount);
+
+        const gasLimit = await router.estimateGas.swapTokensForExactTokens(
+            String(Math.round(_howManyTokens)), // Min out
+            String(_amount), // Amount
             [token, busd], // Path
-            callerWallet, // Receiver
-            Math.floor(Date.now() / 1000) + 60 * 10, // 10 minutes from now
-            {
-                ...gas,
-                value: _howManyTokens
-            }
-            );
+            callerWallet.address, // Receiver
+            (Math.floor(Date.now() / 1000) + 60 * 20), 
+            {from: callerWallet.address});
 
-            tx.wait();
+            console.log("GAS: " + String(gasLimit));
 
-            console.log("Bought with " + amount + "BUSD");
+        // let tx = await router.swapExactTokensForTokens(
+        //     _howManyTokens, // How many to sell
+        //     ethers.utils.parseEther(amount).toHexString(), // Min out
+        //     [token, busd], // Path
+        //     callerWallet, // Receiver
+        //     (Math.floor(Date.now() / 1000) + 60 * 20)
+        //     );
+
+        //     tx.wait();
+
+            console.log("Sold for " + amount + " BUSD");
         } catch (error) {
             console.log("Failed to sell: " + error);
         }
