@@ -1,6 +1,6 @@
 // TO DO LIST 
 // 1) BUY/SELL FOR ETH 
-// 2) BUY/SELL FOR TOKENS
+// 2) BUY/SELL FOR TOKENS [x]
 // 3) CONNECT TO KUCOIN API + READ/WRITE
 
 const ethers = require('ethers');
@@ -13,7 +13,6 @@ const key = process.env.PRIVATE_KEY;
 
 // SC variables
 const token = "0x30B5E345C79255101B8af22a19805A6fb96DdEBb";
-// const token = "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"; // cake
 
 const busd = "0xe9e7cea3dedca5984780bafc599bd69add087d56";
 const pcsFactory = "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73";
@@ -100,7 +99,8 @@ const fetchPCSPrice = async () => {
     } catch (error) {
         console.log("Error PCS price: " + error);
     }
-    }
+}
+
 
 const fetchKuCoinPrice = async () => {
     try {
@@ -121,9 +121,10 @@ const fetchKuCoinPrice = async () => {
         console.log("Error KuCoin Price: " + error);
     }  
 
-    }
+}
 
-    const buyTokensWithBusd = async (amount) => {
+
+const buyTokensWithBusd = async (amount) => {
         try {
 
         let _amount = ethers.utils.parseEther(String(amount));
@@ -155,9 +156,10 @@ const fetchKuCoinPrice = async () => {
         } catch (error) {
             console.log("Failed to buy: " + error);
         } 
-    }
+}
 
-    const sellTokensForBusd = async (amount) => {
+
+const sellTokensForBusd = async (amount) => {
         try {
         // How many tokens should be sold for "amount" of BUSD
         let _howManyTokens = ethers.BigNumber.from(Math.round(amount / pcsPrice));
@@ -189,11 +191,12 @@ const fetchKuCoinPrice = async () => {
         } catch (error) {
             console.log("Failed to sell: " + error);
         }
-    }
+}
 
-    const buy = async () => {
+
+const buy = async () => {
         try {
-            let dif =cexPrice - pcsPrice;
+            let dif = cexPrice - pcsPrice;
 
             let x = dif * 100 /cexPrice;
             console.log("Dif: +" + parseFloat(x).toFixed(2) + "% bigger on DEX");
@@ -227,9 +230,10 @@ const fetchKuCoinPrice = async () => {
         } catch (error) {
             console.log("Err:" + error);
         }
-    }
+}
 
-    const sell = async () => {
+
+const sell = async () => {
         try {
             let dif = pcsPrice -cexPrice;
 
@@ -265,10 +269,10 @@ const fetchKuCoinPrice = async () => {
         } catch (error) {
             console.log("Err:" + error);
         }
-    }
+}
     
     
-    const comparePrices = async () => {
+const comparePrices = async () => {
     try {
         console.log("\n");
         console.log("\x1b[33m%s\x1b[0m","Comparing prices...");
@@ -287,55 +291,16 @@ const fetchKuCoinPrice = async () => {
     } catch (error) {
         console.log("Error compare prices: " + error);
     }
-
 }
 
-// // Token SC connection
-// console.log("\x1b[33m%s\x1b[0m", "CONNECTING TO TOKEN SC...");
-
-//  // Connect to the smart contract
-//  const pairSc2 = new ethers.Contract(pairAddress, tokenAbi, iProvider);
-
-// console.log("Connected!")
-// console.log("\n");
-
-// console.log("\x1b[33m%s\x1b[0m", "LISTENING ON TOKEN EVENTS...");
-
-// pairSc2.on("Transfer", (from, to, value) => {
-//     let info = {
-//       from: from,
-//       to: to,
-//       value: value,
-//     };
-
-
-//     if(info.from.toString() === pcsRouter) {
-//         console.log("\x1b[32m", "BUY DETECTED!");
-//         console.log("\x1b[32m","FROM: " + info.to.toString());
-//         console.log("\x1b[32m","AMOUNT: " + info.value.toString())
-//         console.log("\n");
-        
-//     } else if (info.to.toString() === pcsRouter) {
-//         console.log("\x1b[31m", "SELL DETECTED!");
-//         console.log("\x1b[31m","FROM: " + info.from.toString());
-//         console.log("\x1b[31m","AMOUNT: " + info.value.toString())
-//         console.log("\n");
-
-//     }
-
-//   });
 
 setInterval(function(){ 
     fetchKuCoinPrice();  
-}, 5000);
+}, 5000); 
 
-
-       
 } catch (error) {
     console.log("Error: " + error);
 }
-
-
 }
 
 main()
