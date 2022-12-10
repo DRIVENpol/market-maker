@@ -219,7 +219,7 @@ const buy = async () => {
             }
             else if(x<= 35 && x > 20) {
                 console.log("\x1b[32m", "\n Buying with 500 BUSD! \n ");
-                buyTokensWithBnb(500);
+                buyTokensWithBnb(0.1);
             }
             else if(x<= 20 && x > 10) {
                 console.log("\x1b[32m", "\n Buying with 250 BUSD! \n ");
