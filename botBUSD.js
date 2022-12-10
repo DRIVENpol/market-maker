@@ -25,7 +25,7 @@ const abiPair = ["function getReserves() external view returns (uint112 reserve0
 const tokenAbi = ["function decimals() public view returns (uint8)", "function balanceOf(address account) public view returns (uint256)",
 "function approve(address spender, uint256 amount) public returns (bool)"];
 // Prices
-letcexPrice = 0;
+let cexPrice = 0;
 let pcsPrice = 0;
 let pairAddress = "";
 
