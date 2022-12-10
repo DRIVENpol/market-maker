@@ -22,12 +22,21 @@ const pcsRouter = "0x10ED43C718714eb63d5aA57B78B54704E256024E";
 // PancakeSwap Factory ABI - only for "getPair" function
 const factoryAbi = ["function getPair(address tokenA, address tokenB) external view returns (address pair)"];
 const abiPair = ["function getReserves() external view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast)", "function token0() external view returns (address)"];
-const tokenAbi = ["event Transfer(address indexed from, address indexed to, uint256 value)"];
+const tokenAbi = ["function decimals() public view returns (uint8)", "function balanceOf(address account) public view returns (uint256)"];
+const routerABI = ["function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external ensure(deadline) returns (uint[] memory amounts)",
+"function swapTokensForExactTokens(uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline) external ensure(deadline) returns (uint[] memory amounts)"]
 
 // Prices
 letcexPrice = 0;
 let pcsPrice = 0;
 let pairAddress = "";
+
+// Gas
+const gasPrice = ethers.utils.parseUnits('10', 'gwei');
+const gas = {
+  gasPrice: gasPrice,
+  gasLimit: 300000
+}
 
 // MAIN
 const main = async () => {
@@ -45,9 +54,12 @@ console.log("Connected!")
 console.log("\n");
 
 // DEX factory connection
-console.log("\x1b[33m%s\x1b[0m", "CONNECTING TO PCS FACTORY...");
+console.log("\x1b[33m%s\x1b[0m", "CONNECTING TO SMART CONTRACTS...");
 
 let factory = new ethers.Contract(pcsFactory, factoryAbi, callerWallet);
+let router = new ethers.Contract(pcsRouter, routerABI, callerWallet);
+let tokenSc = new ethers.Contract(token, tokenAbi, callerWallet);
+let tokenBusdSc = new ethers.Contract(busd, tokenAbi, callerWallet);
 
 console.log("Connected to PCS factory!");
 console.log("\n");
@@ -78,10 +90,15 @@ const fetchPCSPrice = async () => {
         
         console.log("\n");
         console.log("\x1b[33m%s\x1b[0m","Fetching price...");
+
+        // let decimals0 = await tokenSc.decimals();
+        // let decimals1 = await tokenBusdSc.decimals();
         
         if(token0 == busd) {
+            // Reserve 0 / reserve 1
             pcsPrice = ethers.BigNumber.from(reserves0) / ethers.BigNumber.from(reserves1);
           } else {
+            // Reserve 1 / reserve 0
               pcsPrice = ethers.BigNumber.from(reserves1) / ethers.BigNumber.from(reserves0);
           }
         
@@ -100,8 +117,8 @@ const fetchKuCoinPrice = async () => {
         let url = new URL(`https://api.coingecko.com/api/v3/coins/binance-smart-chain/contract/0x30b5e345c79255101b8af22a19805a6fb96ddebb`);
         let response = await fetch(url);
         let result = await response.json();
-        //cexPrice = result.tickers[0].last;
-       cexPrice = parseFloat(0.007208148139378678); // Testing
+        cexPrice = result.tickers[0].last;
+    //    cexPrice = parseFloat(0.007208148139378678); // Testing
         
         console.log("Token price on KuCoin: "+ result.tickers[0].last);
         console.log("\n");
@@ -112,6 +129,26 @@ const fetchKuCoinPrice = async () => {
         console.log("Error KuCoin Price: " + error);
     }  
 
+    }
+
+    const buyTokensWithBusd = async (amount) => {
+
+        let _amount = ethers.utils.parseEther(amount).toHexString();
+
+        let tx = await router.swapTokensForTokens(
+            0, // Slippage
+            [busd, token], // Path
+            callerWallet, // Receiver
+            Math.floor(Date.now() / 1000) + 60 * 10, // 10 minutes from now
+            {
+                ...gas,
+                value: _amount
+            }
+            );
+
+            tx.wait();
+
+            console.log("Bought with " + amount + "BUSD");
     }
 
     const buy = async () => {
@@ -214,7 +251,7 @@ const fetchKuCoinPrice = async () => {
 
 setInterval(function(){ 
     fetchKuCoinPrice();  
-}, 10000);
+}, 5000);
 
 
        
