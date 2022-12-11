@@ -117,13 +117,37 @@ const fetchKuCoinPrice = async () => {
     try {
         console.log("\x1b[33m%s\x1b[0m","Fetching token price on KuCoin... /n")
     
-        let url = new URL(`https://api.coingecko.com/api/v3/coins/binance-smart-chain/contract/0x30b5e345c79255101b8af22a19805a6fb96ddebb`);
-        let response = await fetch(url);
-        let result = await response.json();
-        cexPrice = result.tickers[0].last;
-    //    cexPrice = parseFloat(0.003208148139378678); // Testing
+    //     let url = new URL(`https://api.coingecko.com/api/v3/coins/binance-smart-chain/contract/0x30b5e345c79255101b8af22a19805a6fb96ddebb`);
+    //     let response = await fetch(url);
+    //     let result = await response.json();
+    //     cexPrice = result.tickers[0].last;
+    // //    cexPrice = parseFloat(0.003208148139378678); // Testing
+
+    const options = {
+        hostname: 'api.kucoin.com',
+        port: 443,
+        path: '/api/v1/market/orderbook/level1?symbol=REV3L-USDT',
+        method: 'GET'
+      };
+      
+      https.get(options, (resp) => {
+        let data = '';
+      
+        resp.on('data', (chunk) => {
+          data += chunk;
+        });
+      
+        resp.on('end', () => {
+          const response = JSON.parse(data);
+          cexPrice = parseFloat(response.data.price);
+        //   console.log(`The current price of REV3L-USDT is: ${cexPrice}`);
+        });
+      }).on("error", (err) => {
+        console.log("Error: " + err.message);
+      });
+      
         
-        console.log("Token price on KuCoin: "+ result.tickers[0].last);
+        console.log("Token price on KuCoin: "+ cexPrice);
         console.log("\n");
 
         
