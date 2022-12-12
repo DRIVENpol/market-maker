@@ -4,7 +4,7 @@
 // 3) CONNECT TO KUCOIN API + READ/WRITE
 
 const ethers = require('ethers');
-const routerAbi = require('./pcs.json');
+const routerAbi = require('./JSON/pcs.json');
 require("dotenv").config()
 
 // ENV variables
