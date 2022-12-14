@@ -1,7 +1,3 @@
-// TO DO LIST 
-// 1) BUY/SELL FOR ETH 
-// 2) BUY/SELL FOR TOKENS [x]
-// 3) CONNECT TO KUCOIN API + READ/WRITE
 
 const ethers = require('ethers');
 const routerAbi = require('./JSON/pcs.json');
